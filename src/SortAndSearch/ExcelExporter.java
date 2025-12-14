@@ -18,8 +18,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A utility class to export sorting performance data to an Excel file with charts.
- * Uses modern Apache POI XDDF classes for chart generation.
+ * A utility class to export sorting performance data to an Excel file with charts
+ * Uses modern Apache POI XDDF classes for chart generation
  */
 public class ExcelExporter {
 
@@ -37,16 +37,16 @@ public class ExcelExporter {
         try (XSSFWorkbook workbook = new XSSFWorkbook()) {
             XSSFSheet sheet = workbook.createSheet("Performance Data");
 
-            // 1. Write Data to the Sheet
+            // write Data to the Sheet
             writeDataToSheet(sheet, sizes, results);
 
-            // 2. Create the Time Chart (Algorithms' Execution Time Graph)
+            // create the Time Chart (Algorithms' Execution Time Graph)
             createTimeChart(sheet, sizes.length);
 
-            // 3. Create the Comparison Count Chart (Algorithms' Operation Count Graph)
+            // create the Comparison Count Chart (Algorithms' Operation Count Graph)
             createComparisonChart(sheet, sizes.length);
 
-            // Save the workbook
+            // save the workbook
             try (FileOutputStream fileOut = new FileOutputStream(FILE_NAME)) {
                 workbook.write(fileOut);
                 System.out.println("Success: Excel report with charts created at: " + FILE_NAME);
@@ -74,20 +74,20 @@ public class ExcelExporter {
             headerRow.createCell(i).setCellValue(headers[i]);
         }
 
-        // Data Rows (Row 1 to 8)
+        // data Rows (Row 1 to 8)
         String[] rowNames = {
                 "BubbleSort, ms", "SelectionSort, ms", "MergeSort, ms", "QuickSort, ms",
                 "BubbleSort, comparisons", "SelectionSort, comparisons", "MergeSort, comparisons", "QuickSort, comparisons"
         };
 
-        // Data indices from the 'results' array: MS (1, 3, 5, 7) then Comp (0, 2, 4, 6)
+        // data indices from the 'results' array: MS (1, 3, 5, 7) then Comp (0, 2, 4, 6)
         int[] dataIndices = {1, 3, 5, 7, 0, 2, 4, 6};
 
         for (int i = 0; i < rowNames.length; i++) {
-            Row row = sheet.createRow(i + 1); // Excel rows 1 through 8
-            row.createCell(0).setCellValue(rowNames[i]); // Row label
+            Row row = sheet.createRow(i + 1); // excel rows 1 through 8
+            row.createCell(0).setCellValue(rowNames[i]); // row label
 
-            int dataRowIndex = dataIndices[i]; // Index in the 'results' array
+            int dataRowIndex = dataIndices[i]; // index in the 'results' array
 
             for (int j = 0; j < sizes.length; j++) {
                 // j+1 is the column index
@@ -95,7 +95,7 @@ public class ExcelExporter {
             }
         }
 
-        // Auto-size columns for better readability
+        // auto-size columns for better readability
         for (int i = 0; i < headers.length; i++) {
             sheet.autoSizeColumn(i);
         }
@@ -108,21 +108,21 @@ public class ExcelExporter {
         XSSFSheet xssfSheet = (XSSFSheet) sheet;
         XSSFDrawing drawing = xssfSheet.createDrawingPatriarch();
 
-        // Define anchor for the chart (top-left: K1, bottom-right: V20)
+        // define anchor for the chart (top-left: K1, bottom-right: V20)
         ClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 10, 1, 21, 20);
 
         XSSFChart chart = drawing.createChart(anchor);
         chart.setTitleText("Algorithms' Execution Time Graph");
         chart.setTitleOverlay(false);
 
-        // **FIX: Create axes BEFORE creating chart data**
+        // create axes BEFORE creating chart data
         XDDFCategoryAxis catAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
         catAxis.setTitle("Data Amount");
 
         XDDFValueAxis valAxis = chart.createValueAxis(AxisPosition.LEFT);
         valAxis.setTitle("Milliseconds");
 
-        // Now create chart data with the axes
+        // create chart data with the axes
         XDDFLineChartData data = (XDDFLineChartData) chart.createData(ChartTypes.LINE, catAxis, valAxis);
         data.setVaryColors(false);
 
@@ -130,15 +130,15 @@ public class ExcelExporter {
         XDDFNumericalDataSource<Double> xs = XDDFDataSourcesFactory.fromNumericCellRange(xssfSheet,
                 new CellRangeAddress(0, 0, 1, dataSize));
 
-        // Add series for MS data (Excel Rows 1, 2, 3, 4)
-        addXddfSeries(data, xssfSheet, xs, 1, dataSize); // BubbleSort, ms
-        addXddfSeries(data, xssfSheet, xs, 2, dataSize); // SelectionSort, ms
-        addXddfSeries(data, xssfSheet, xs, 3, dataSize); // MergeSort, ms
-        addXddfSeries(data, xssfSheet, xs, 4, dataSize); // QuickSort, ms
+        // add series for MS data (Excel Rows 1, 2, 3, 4)
+        addXddfSeries(data, xssfSheet, xs, 1, dataSize); // bubbleSort, ms
+        addXddfSeries(data, xssfSheet, xs, 2, dataSize); // selectionSort, ms
+        addXddfSeries(data, xssfSheet, xs, 3, dataSize); // mergeSort, ms
+        addXddfSeries(data, xssfSheet, xs, 4, dataSize); // quickSort, ms
 
         chart.plot(data);
 
-        // Ensure the chart's legend is visible
+        // ensure the chart's legend is visible
         chart.getOrAddLegend().setPosition(LegendPosition.BOTTOM);
     }
 
@@ -149,21 +149,21 @@ public class ExcelExporter {
         XSSFSheet xssfSheet = (XSSFSheet) sheet;
         XSSFDrawing drawing = xssfSheet.createDrawingPatriarch();
 
-        // Define anchor for the chart (top-left: K21, bottom-right: V40)
+        // define anchor for the chart (top-left: K21, bottom-right: V40)
         ClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 10, 21, 21, 40);
 
         XSSFChart chart = drawing.createChart(anchor);
         chart.setTitleText("Algorithms' Operation Count Graph");
         chart.setTitleOverlay(false);
 
-        // **FIX: Create axes BEFORE creating chart data**
+        // create axes BEFORE creating chart data
         XDDFCategoryAxis catAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
         catAxis.setTitle("Data Amount");
 
         XDDFValueAxis valAxis = chart.createValueAxis(AxisPosition.LEFT);
         valAxis.setTitle("Comparison Count");
 
-        // Now create chart data with the axes
+        // create chart data with the axes
         XDDFLineChartData data = (XDDFLineChartData) chart.createData(ChartTypes.LINE, catAxis, valAxis);
         data.setVaryColors(false);
 
@@ -171,11 +171,11 @@ public class ExcelExporter {
         XDDFNumericalDataSource<Double> xs = XDDFDataSourcesFactory.fromNumericCellRange(xssfSheet,
                 new CellRangeAddress(0, 0, 1, dataSize));
 
-        // Add series for Comparison data (Excel Rows 5, 6, 7, 8)
-        addXddfSeries(data, xssfSheet, xs, 5, dataSize); // BubbleSort, comparisons
-        addXddfSeries(data, xssfSheet, xs, 6, dataSize); // SelectionSort, comparisons
-        addXddfSeries(data, xssfSheet, xs, 7, dataSize); // MergeSort, comparisons
-        addXddfSeries(data, xssfSheet, xs, 8, dataSize); // QuickSort, comparisons
+        // add series for Comparison data (Excel Rows 5, 6, 7, 8)
+        addXddfSeries(data, xssfSheet, xs, 5, dataSize); // bubbleSort, comparisons
+        addXddfSeries(data, xssfSheet, xs, 6, dataSize); // selectionSort, comparisons
+        addXddfSeries(data, xssfSheet, xs, 7, dataSize); // mergeSort, comparisons
+        addXddfSeries(data, xssfSheet, xs, 8, dataSize); // quickSort, comparisons
 
         chart.plot(data);
 
@@ -195,9 +195,9 @@ public class ExcelExporter {
         XDDFNumericalDataSource<Double> ys = XDDFDataSourcesFactory.fromNumericCellRange(sheet,
                 new CellRangeAddress(rowIdx, rowIdx, 1, dataSize));
 
-        // Get the series title from the first cell of the current row and extract only algorithm name
+        // get the series title from the first cell of the current row and extract only algorithm name
         String fullTitle = sheet.getRow(rowIdx).getCell(0).getStringCellValue();
-        // Extract only the algorithm name (before the comma)
+        // extract only the algorithm name (before the comma)
         String seriesTitle = fullTitle.contains(",") ? fullTitle.split(",")[0] : fullTitle;
 
         XDDFChartData.Series series = data.addSeries(xs, ys);
