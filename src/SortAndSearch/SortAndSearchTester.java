@@ -143,7 +143,7 @@ public class SortAndSearchTester {
         printArray(data);
     }
 
-    //Generates a random array of CountedInts.
+    // generates a random array of CountedInts
     private static CountedInt[] generateRandomCountedIntArray(int size, int maxBound) {
         Random rand = new Random();
         CountedInt[] data = new CountedInt[size];
@@ -160,7 +160,7 @@ public class SortAndSearchTester {
      */
     private static CountedInt[] cloneArray(CountedInt[] original) {
         CountedInt[] clone = new CountedInt[original.length];
-        // We need a deep copy of the objects themselves, not just the references
+        // a deep copy of the objects themselves, not just the references
         for (int i = 0; i < original.length; i++) {
             clone[i] = new CountedInt(original[i].getValue());
         }
@@ -213,7 +213,7 @@ public class SortAndSearchTester {
                 "QuickSort,random,comparisons", "QuickSort,random,ms"
         };
 
-        // Indices in the comparisonResults array corresponding to the desired display order
+        // indices in the comparisonResults array corresponding to the desired display order
         // Bubble (0,1) -> Selection (2,3) -> Merge (4,5) -> Quick (6,7)
         int[] displayIndices = {0, 1, 2, 3, 4, 5, 6, 7};
 
@@ -227,8 +227,8 @@ public class SortAndSearchTester {
             System.out.println();
         }
 
-        // Excel Export
-        // This call creates the Excel file with charts based on the collected data
+        // excel Export
+        // create the Excel file with charts based on the collected data
         ExcelExporter.exportDataWithCharts(sizes, comparisonResults);
     }
 
@@ -260,23 +260,23 @@ public class SortAndSearchTester {
      * Executes the sorting, monitors time and comparisons, and prints the results.
      */
     private static void testSortAlgorithm(int size, String algoName, CountedInt[] originalData, SortMethod sortFunc) {
-        // Deep clone the original array to ensure each sort starts with the same data
+        // deep clone the original array to ensure each sort starts with the same data
         CountedInt[] data = cloneArray(originalData);
 
-        // Reset the counter before starting the sort
+        // reset the counter before starting the sort
         CountedInt.resetCounter();
 
-        // Record start time using System.nanoTime() for high precision
+        // record start time using System.nanoTime() for high precision
         long startTime = System.nanoTime();
 
-        // Execute the sort function
+        // execute the sort function
         sortFunc.sort(data);
 
-        // Record end time and calculate elapsed milliseconds
+        // record end time and calculate elapsed milliseconds
         long endTime = System.nanoTime();
         long durationMs = (endTime - startTime) / 1_000_000;
 
-        // Get the total comparison count
+        // get the total comparison count
         long comparisons = CountedInt.getComparisonCount();
 
         System.out.printf("%d, %s, random, comparisons, %d%n", size, algoName, comparisons);
