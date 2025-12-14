@@ -1,4 +1,4 @@
-# Sort and Search Tester
+# Sort and Search Project
 
 A program for testing and comparing the performance of various sorting and searching algorithms.
 
